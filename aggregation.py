@@ -200,9 +200,17 @@ error = ptr.std(axis=1)
 ymax = max(y)
 xmax = y.idxmax(ymax)
 
+# same for minimum
+ymin = min(y)
+xmin = y.idxmin(ymin)
+
 # plotting lines at maximum
 plt.axvline(x=xmax, color='orange', linestyle='dotted')
 plt.axhline(y=ymax, color='orange', linestyle='dotted')
+
+# plotting lines at minimum
+plt.axvline(x=xmin, color='orange', linestyle='dotted')
+plt.axhline(y=ymin, color='orange', linestyle='dotted')
 
 plt.plot(x, y)
 
@@ -216,9 +224,58 @@ plt.tick_params(direction='in')
 
 plt.xlabel('Time lag (in frames)')
 plt.ylabel('Correlation coefficient')
-plt.title(f'Interaction type: {select}, maximum {round(ymax,2)} at frame lag {xmax}')
+# plt.title(f'Interaction type: {select}, maximum {round(ymax,2)} at frame lag {xmax}')
 
 plt.fill_between(x, y-error, y+error, alpha=0.25)
 
 plt.show()
 
+#%% MAXIMA OF MEAN CORRS
+
+savedir = os.path.normpath(r"C:\Users\Jakob\Downloads\Schoolshait\MSc\Core Topics AI\Project\data_processed\diff")
+
+# file iterator
+it = os.scandir(savedir)
+
+# select which CSV to read: ['handShake', 'highFive', 'hug', 'kiss', 'negative']
+select = 'negative'
+
+for entry in it:
+    if entry.name.startswith(select) and entry.is_file():
+        # print(entry.path)
+        df = pd.read_csv(entry.path, index_col=0)
+
+# alternatively, drop everything outside of the [-15,15] range
+start = -15     # inclusive
+stop = 15       # inclusive
+droplabels = [i for i in df.index.values.tolist()
+              if i < start or i > stop]
+df.drop(index=droplabels, inplace=True)
+
+for entry in it:
+    if entry.name.startswith(select) and entry.is_file():
+        # print(entry.path)
+        df = pd.read_csv(entry.path, index_col=0)
+    
+# alternatively, drop everything outside of the [-15,15] range
+start = -15     # inclusive
+stop = 15       # inclusive
+droplabels = [i for i in df.index.values.tolist()
+              if i < start or i > stop]
+df.drop(index=droplabels, inplace=True)
+
+ptr = df
+
+x = ptr.index.values.tolist()
+y = ptr.mean(axis=1)
+error = ptr.std(axis=1)
+
+# getting location + value of maximum of mean
+ymax = max(y)
+xmax = y.idxmax(ymax)
+errmax = error[xmax]
+
+# same for minimum
+ymin = min(y)
+xmin = y.idxmin(ymin)
+errmin = error[xmin]

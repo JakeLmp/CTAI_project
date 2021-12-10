@@ -59,6 +59,6 @@ tits = {'recurrence_rate':'recurrence rate',
         'average_len':'average length',
         'longest_len':'longest length',
         'laminarity':'laminarity'}
-plt.title(f'Mean {tits[current]} of interaction types')
+# plt.title(f'Mean {tits[current]} of interaction types')
 
 
